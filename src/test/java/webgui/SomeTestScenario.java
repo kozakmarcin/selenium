@@ -4,14 +4,25 @@
 package webgui;
 
 import dev.selenium.page.DocumentationPage;
+import dev.selenium.page.ExplicitWaitPage;
 import dev.selenium.page.MainPage;
 import org.framework.TestContext;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class SomeTestScenario {
+    private TestContext testContext;
+    private static final String TEXT = "fixed implicit wait javascript example (#1909)[deploy site] (680f75b07ed)";
+
+    @BeforeEach
+    public void init(){
+        testContext = new TestContext();
+    }
 
     @Test void someTestCase() {
-        TestContext testContext = new TestContext();
         MainPage mainPage = new MainPage();
         mainPage.pressDocumentationButton(testContext);
 
@@ -23,20 +34,15 @@ class SomeTestScenario {
         documentationPage.searchComponent.inputTextToSearchField(testContext, "explicit");
         documentationPage.searchComponent.clickFirstSearchHit(testContext);
 
+        ExplicitWaitPage explicitWaitPage = new ExplicitWaitPage();
+        String textFromFoundedTag = explicitWaitPage.getTextFromFoundedTag(testContext);
+        assertEquals(textFromFoundedTag, TEXT);
 
+    }
 
-
-        /** Zadanie:
-         * Idz do https://www.selenium.dev/
-         * Kliknij w Documentation z menu glownego
-         * Na nowej stronie bedzie snippet z zakladkami, wybierz "kotlin"
-         * U gory, w prawym gornym rogu jest wyszukiwanie - kliknij w nie
-         * W oknie wyszukiwania wpisz "wait"
-         * Nic nie klikaj tylko skasuj "wait" i wpisz "explicit"
-         * Kliknij pierwszy element listy
-         */
-
-
+    @AfterEach
+    public void teardown(){
+        testContext.terdown();
     }
 
 }
